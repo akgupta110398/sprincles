@@ -1,6 +1,6 @@
  "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SwipeDeck from "../components/SwipeDeck";
 import Matches from "../components/Matches";
 
@@ -39,6 +39,22 @@ const MOCK_PROFILES: Profile[] = [
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"swipe" | "matches">("swipe");
   const [likedProfiles, setLikedProfiles] = useState<Profile[]>([]);
+
+  useEffect(() => {
+    const storedLikes = localStorage.getItem("sprincles-liked-profiles");
+    if (storedLikes) {
+      try {
+        const parsedLikes = JSON.parse(storedLikes) as Profile[];
+        setLikedProfiles(parsedLikes);
+      } catch {
+        // ignore malformed JSON
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("sprincles-liked-profiles", JSON.stringify(likedProfiles));
+  }, [likedProfiles]);
 
   const handleLikeProfile = (profile: Profile) => {
     setLikedProfiles((prev) =>
