@@ -3,7 +3,9 @@ import { MongoClient, Db } from "mongodb";
 const uri = process.env.MONGODB_URI;
 
 if (!uri) {
-  throw new Error("MONGODB_URI environment variable is not defined");
+  throw new Error(
+    "MONGODB_URI environment variable is not defined. Please add it to your .env.local file.",
+  );
 }
 
 const dbName = "sprincles";
