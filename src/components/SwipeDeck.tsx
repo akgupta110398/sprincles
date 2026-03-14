@@ -52,13 +52,35 @@ export default function SwipeDeck({ profiles, onLikeProfile }: Props) {
     x.set(0);
   };
 
+  // Hydrate from localStorage on mount
   useEffect(() => {
+    try {
+      const storedLiked = localStorage.getItem("sprincles-liked-profiles");
+      const storedPassed = localStorage.getItem("sprincles-passed-profiles");
+
+      if (storedLiked) {
+        const parsedLiked = JSON.parse(storedLiked) as Profile[];
+        setLikedProfiles(parsedLiked);
+      }
+
+      if (storedPassed) {
+        const parsedPassed = JSON.parse(storedPassed) as Profile[];
+        setPassedProfiles(parsedPassed);
+      }
+    } catch {
+      // ignore JSON/localStorage errors
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("sprincles-liked-profiles", JSON.stringify(likedProfiles));
     if (likedProfiles.length === 0) return;
     // eslint-disable-next-line no-console
     console.log("likedProfiles", likedProfiles);
   }, [likedProfiles]);
 
   useEffect(() => {
+    localStorage.setItem("sprincles-passed-profiles", JSON.stringify(passedProfiles));
     if (passedProfiles.length === 0) return;
     // eslint-disable-next-line no-console
     console.log("passedProfiles", passedProfiles);
