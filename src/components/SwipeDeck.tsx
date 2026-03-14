@@ -39,6 +39,17 @@ export default function SwipeDeck({ profiles, onLikeProfile }: Props) {
       console.log("Liked ❤️");
       setLikedProfiles((prev) => [...prev, currentProfile]);
       onLikeProfile?.(currentProfile);
+      // Fire-and-forget request to persist like in backend
+      void fetch("/api/like", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(currentProfile),
+      }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error("Failed to save like", error);
+      });
     } else if (direction === "left") {
       // eslint-disable-next-line no-console
       console.log("Passed ❌");
