@@ -56,6 +56,21 @@ export default function Home() {
     localStorage.setItem("sprincles-liked-profiles", JSON.stringify(likedProfiles));
   }, [likedProfiles]);
 
+  useEffect(() => {
+    const fetchMatches = async () => {
+      try {
+        const res = await fetch("/api/matches");
+        if (!res.ok) return;
+        const data = await res.json();
+        setLikedProfiles(data as Profile[]);
+      } catch {
+        // ignore fetch errors for now
+      }
+    };
+
+    fetchMatches();
+  }, []);
+
   const handleLikeProfile = (profile: Profile) => {
     setLikedProfiles((prev) =>
       prev.some((p) => p.id === profile.id) ? prev : [...prev, profile],
