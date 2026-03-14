@@ -1,8 +1,18 @@
-"use client";
+ "use client";
 
+import { useState } from "react";
 import SwipeDeck from "../components/SwipeDeck";
+import Matches from "../components/Matches";
 
-const MOCK_PROFILES = [
+interface Profile {
+  id: number;
+  name: string;
+  age: number;
+  bio: string;
+  image: string;
+}
+
+const MOCK_PROFILES: Profile[] = [
   {
     id: 1,
     name: "Emily",
@@ -27,9 +37,47 @@ const MOCK_PROFILES = [
 ];
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState<"swipe" | "matches">("swipe");
+  const [likedProfiles, setLikedProfiles] = useState<Profile[]>([]);
+
+  const handleLikeProfile = (profile: Profile) => {
+    setLikedProfiles((prev) =>
+      prev.some((p) => p.id === profile.id) ? prev : [...prev, profile],
+    );
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <SwipeDeck profiles={MOCK_PROFILES} />
+    <div className="min-h-screen flex flex-col items-center bg-gray-100 px-4 py-8">
+      <div className="mb-6 flex gap-2 rounded-full bg-white p-1 shadow-sm">
+        <button
+          type="button"
+          onClick={() => setActiveTab("swipe")}
+          className={`px-4 py-2 text-sm font-medium rounded-full transition ${
+            activeTab === "swipe"
+              ? "bg-pink-500 text-white shadow"
+              : "text-gray-700 hover:bg-gray-100"
+          }`}
+        >
+          Swipe
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("matches")}
+          className={`px-4 py-2 text-sm font-medium rounded-full transition ${
+            activeTab === "matches"
+              ? "bg-pink-500 text-white shadow"
+              : "text-gray-700 hover:bg-gray-100"
+          }`}
+        >
+          Matches
+        </button>
+      </div>
+
+      {activeTab === "swipe" ? (
+        <SwipeDeck profiles={MOCK_PROFILES} onLikeProfile={handleLikeProfile} />
+      ) : (
+        <Matches matches={likedProfiles} />
+      )}
     </div>
   );
 }

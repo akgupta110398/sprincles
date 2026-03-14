@@ -13,11 +13,12 @@ interface Profile {
 
 interface Props {
   profiles: Profile[];
+  onLikeProfile?: (profile: Profile) => void;
 }
 
 const SWIPE_THRESHOLD = 100;
 
-export default function SwipeDeck({ profiles }: Props) {
+export default function SwipeDeck({ profiles, onLikeProfile }: Props) {
   const [currentIndex, setCurrentIndex] = useState(profiles.length - 1);
   const [likedProfiles, setLikedProfiles] = useState<Profile[]>([]);
   const [passedProfiles, setPassedProfiles] = useState<Profile[]>([]);
@@ -37,6 +38,7 @@ export default function SwipeDeck({ profiles }: Props) {
       // eslint-disable-next-line no-console
       console.log("Liked ❤️");
       setLikedProfiles((prev) => [...prev, currentProfile]);
+      onLikeProfile?.(currentProfile);
     } else if (direction === "left") {
       // eslint-disable-next-line no-console
       console.log("Passed ❌");
